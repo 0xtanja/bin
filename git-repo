@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+set -e
+
+[[ "$1" = "init" ]] && {
+  shift 1
+
+  url=""
+  [[ "$1" = "-u" ]] && {
+    url=${2:?manifest repository URL must be set when using -u}
+    shift 2
+  }
+
+  manifest=""
+  [[ "$1" = "-m" ]] && {
+    manifest=${2:?manifest name must be set when using -m}
+    shift 2
+  }
+
+  dirname=${manifest%.xml}
+  manifest=${dirname}.xml
+
+  (
+    mkdir -v $dirname
+    cd $dirname
+    repo init -u $url -m $manifest $@
+    repo sync
+  )
+}
+
